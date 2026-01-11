@@ -1,18 +1,310 @@
+<!DOCTYPE html>
 <html lang="fr">
-    <style>
-        body{
-            background: linear-gradient(rgb(185, 185, 185), rgb(226, 226, 226));
-        }
-        html {
-            scroll-behavior: smooth;
-        }
+<head>
+<meta charset="UTF-8" />
+<title>Movement Shop</title>
 
-    </style>
-    <head>
-        <title>Movement Shop</title>
-        
-    </head>
-    <body>
-        
-    </body>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  overflow-x: hidden; /* juste horizontal */
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* remove height: 300vh; */
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+
+.content {
+  position: relative;
+  color: white;
+  z-index: 2;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px 0;
+}
+
+.logo img {
+  width: clamp(180px, 40vw, 520px);
+  height: auto;
+  display: block;
+  max-width: 90%;
+}
+
+section {
+  min-height: 50vh;
+  padding: 120px 20px 60px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+section h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+section p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #a3a3a3;
+}
+
+a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+/* Products alternating layout */
+.products {
+  padding: 60px 20px 80px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.product-row {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  margin: 40px 0;
+}
+.product-row .product-img {
+  flex: 0 0 auto;
+}
+.product-row .product-img img {
+  width: clamp(140px, 34vw, 520px);
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+.product-row .product-content {
+  flex: 1 1 40%;
+}
+.product-row:nth-child(even) {
+  flex-direction: row-reverse;
+}
+
+@media (max-width: 720px) {
+  .product-row {
+    flex-direction: column !important;
+    text-align: center;
+  }
+  .product-row .product-img img {
+    width: min(86vw, 420px);
+  }
+  section {
+    padding: 40px 16px;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<main class="content">
+              <div class="logo">
+            <img src="assets/logo.png" alt="Movement Shop logo" id="logo">
+        </div>
+    <section id="heures">
+        <h2>La boutique</h2>
+        <p>➖97 grand rue, 67700 Saverne🇫🇷 <br>
+           ➖MAR-VEN : 10h-12h / 14h-18h <br>
+           ➖SAMEDI : 10h-18h non stop <br>
+        </p>
+    </section>
+    <section id="nos-produits" class="products">
+        <h2>Nos produits</h2>
+
+        <div class="product-row">
+          <div class="product-content">
+            <h3>Skate</h3>
+            <p>Planches, roues, trucks — tout pour rider.</p>
+          </div>
+          <div class="product-img">
+            <img src="assets/skateimg.png" alt="Skate">
+          </div>
+        </div>
+
+        <div class="product-row">
+          <div class="product-content">
+            <h3>Trottinette freestyle</h3>
+            <p>Trottinettes, pièces et accessoires pour figures.</p>
+          </div>
+          <div class="product-img">
+            <img src="assets/trot.png" alt="Trottinette">
+          </div>
+        </div>
+
+
+        <div class="product-row">
+          <div class="product-content">
+            <h3>Streetwear</h3>
+            <p>T-shirts, hoodies et casquettes.</p>
+          </div>
+          <div class="product-img">
+            <img src="assets/v.png" alt="Streetwear">
+          </div>
+        </div>
+
+        <div class="product-row">
+          <div class="product-content">
+            <h3>BMX</h3>
+            <p>Vélos, cadres, roues et pièces.</p>
+          </div>
+          <div class="product-img">
+            <img src="assets/bmx.png" alt="BMX">
+          </div>
+        </div>
+
+
+        <div class="product-row">
+          <div class="product-content">
+            <h3>Entretien vélos</h3>
+            <p>Révisions, outils et pièces détachées.</p>
+          </div>
+          <div class="product-img">
+            <img src="assets/entretien.png" alt="Entretien vélos">
+          </div>
+        </div>
+
+    </section>
+    <section id="réseaux">
+        <h2>Suivez-nous sur les réseaux</h2>
+        <p><a href="https://www.instagram.com/movement_shop_saverne/">📷 Instagram</a> <br>
+        <a href="https://www.facebook.com/p/Movement-Shop-Saverne-61578366129331/">🔵 Facebook</a></p>
+    </section>
+    
+</main>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+
+const skateImg = new Image();
+skateImg.src = 'assets/skate.png';
+
+const path = [];
+const spacing = 10;
+let totalHeight = 0;
+
+function getDocumentHeight() {
+  return Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+}
+
+function generatePath() {
+  path.length = 0;
+  totalHeight = getDocumentHeight();
+
+  const amplitude = canvas.width * 0.35;
+  const frequency = 0.0025; // smoother curve for longer pages
+
+  for (let y = 0; y <= totalHeight; y += spacing) {
+    const x = canvas.width / 2 + Math.sin(y * frequency) * amplitude;
+    path.push({ x, y });
+  }
+}
+generatePath();
+
+window.addEventListener('resize', () => {
+  resize();
+  generatePath();
+});
+
+// regenerate path when fonts/images/layout change after load
+window.addEventListener('load', () => setTimeout(generatePath, 200));
+
+function draw(progress) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const maxIndex = Math.min(Math.floor(progress / spacing), path.length);
+  const offsetY = -progress + canvas.height / 3;
+
+  /* ===== LIGNE ===== */
+  ctx.save();
+  ctx.translate(0, offsetY);
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 3;
+  ctx.setLineDash([6, 10]);
+
+  ctx.beginPath();
+  for (let i = 0; i < maxIndex; i++) {
+    const p = path[i];
+    if (i === 0) ctx.moveTo(p.x, p.y);
+    else ctx.lineTo(p.x, p.y);
+  }
+  ctx.stroke();
+  ctx.restore();
+
+  /* ===== SKATE (TOUJOURS AU-DESSUS) ===== */
+  const idx = Math.max(2, maxIndex - 1);
+  if (!skateImg.complete || !path[idx]) return;
+
+  const p0 = path[idx - 2];
+  const p1 = path[idx - 1];
+  const p2 = path[idx];
+
+  const dx = (p2.x - p0.x) / 2;
+  const dy = (p2.y - p0.y) / 2;
+  const angle = Math.atan2(dy, dx);
+
+  const skateWidth = 26;
+  const skateHeight = skateWidth * (510 / 144);
+
+  ctx.save();
+  ctx.translate(p1.x, p1.y + offsetY);
+  ctx.rotate(angle + Math.PI / 2);
+  ctx.drawImage(
+    skateImg,
+    -skateWidth / 2,
+    -skateHeight / 2,
+    skateWidth,
+    skateHeight
+  );
+  ctx.restore();
+}
+
+let ticking = false;
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY || window.pageYOffset;
+  if (!ticking) {
+    window.requestAnimationFrame(() => {
+      draw(scrollY);
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+// initial draw
+draw(window.scrollY || 0);
+</script>
+
+</body>
 </html>
